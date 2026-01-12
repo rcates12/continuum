@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  createdAt DateTime @default(now())
+  habits    Habit[]
+}
+
+model Habit {
+  id           String       @id @default(cuid())
+  userId       String
+  name         String
+  color        String?
+  createdAt    DateTime     @default(now())
+  scheduleType ScheduleType @default(DAILY)
+  daysOfWeek   String?
+  checkIns     CheckIn[]
+  user         User         @relation(fields: [userId], references: [id])
+}
+
+model CheckIn {
+  id        String   @id @default(cuid())
+  habitId   String
+  day       String
+  createdAt DateTime @default(now())
+  habit     Habit    @relation(fields: [habitId], references: [id])
+
+  @@unique([habitId, day])
+}
+
+enum ScheduleType {
+  DAILY
+  WEEKDAYS
+  CUSTOM
+}

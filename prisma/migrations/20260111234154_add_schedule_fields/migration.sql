@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Habit" ADD COLUMN "scheduleType" TEXT NOT NULL DEFAULT 'DAILY';
+ALTER TABLE "Habit" ADD COLUMN "daysOfWeek" TEXT;
+
