@@ -30,7 +30,7 @@ model CheckIn {
   habitId   String
   day       String
   createdAt DateTime @default(now())
-  habit     Habit    @relation(fields: [habitId], references: [id])
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
 
   @@unique([habitId, day])
 }

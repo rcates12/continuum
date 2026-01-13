@@ -45,7 +45,7 @@ export function CreateHabitForm() {
             placeholder="New habit..." 
           />
 
-          <select className="flex-1 rounded-md border px-3 py-2"
+          <select className="flex-1 rounded-md border border-border bg-background px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ocean/50"
             name="scheduleType"
             defaultValue="DAILY"
           >
@@ -67,9 +67,9 @@ export function CreateHabitForm() {
             ["Fri", 5],
             ["Sat", 6],
           ].map(([label, val]) => (
-            <label key={val as number} className="flex items-center gap-1">
-              <input type="checkbox" name="daysOfWeek" value={val as number} />
-              {label as string}
+            <label key={val as number} className="flex items-center gap-2 cursor-pointer select-none">
+              <input type="checkbox" name="daysOfWeek" value={val as number} className="w-4 h-4 accent-ocean" />
+              <span className="text-muted-foreground">{label as string}</span>
             </label>
           ))}
         </div>
@@ -78,7 +78,7 @@ export function CreateHabitForm() {
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="text-red-600">Validation Error</DialogTitle>
+            <DialogTitle className="text-pink">Validation Error</DialogTitle>
             <DialogDescription className="text-base">
               {state?.error}
             </DialogDescription>

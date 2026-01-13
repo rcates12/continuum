@@ -160,3 +160,42 @@ export async function toggleCheckIn(habitId: string, day?: string) {
   revalidatePath(`/habits/${habitId}`);
 }
 
+// Deletes a habit and all associated check-ins
+// @param habitId - The unique identifier of the habit to delete
+// @throws Error if the habit is not found or doesn't belong to the user
+export async function deleteHabit(habitId: string) {
+  const user = await getDevUser();
+  const habit = await prisma.habit.findFirst({
+    where: { id: habitId, userId: user.id },
+    select: { id: true },
+  });
+  if (!habit) throw new Error("Habit not found");
+  await prisma.habit.delete({ where: { id: habitId } });
+  revalidatePath("/habits");
+}
+
+export async function updateHabit(habitId: string, name: string, scheduleType: string, daysOfWeek: number[]) {
+  const user = await getDevUser();
+
+  // verify that the habit exists and belongs to the user
+  const habit = await prisma.habit.findFirst({
+    where: { id: habitId, userId: user.id },
+    select: { id: true },
+  });
+  if (!habit) throw new Error("Habit not found");
+
+  // validate name and schedule type
+  const schema = z.object({
+    name: z.string().min(1).max(50),
+    scheduleType: z.enum(["DAILY", "WEEKDAYS", "CUSTOM"]).default("DAILY"),
+    daysOfWeek: z.array(z.number().min(0).max(6)).default([]),
+  });
+  const parsed = schema.safeParse({ name, scheduleType, daysOfWeek });
+  if (!parsed.success) throw new Error("Invalid habit name or schedule type");
+
+  // update the habit record
+  await prisma.habit.update({ where: { id: habitId }, data: { name: parsed.data.name, scheduleType: parsed.data.scheduleType } });
+  // revalidate list and detail pages
+  revalidatePath("/habits");
+  revalidatePath(`/habits/${habitId}`);
+}

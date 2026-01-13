@@ -40,10 +40,13 @@ export default async function HabitsPage() {
 
     return (
         <>
-        <div className="flex flex-col gap-4 max-w-5xl mx-auto py-16">
+        <div className="max-w-5xl mx-auto pt-8 text-center">
+            <h1 className="text-4xl font-bold text-white">Continuum</h1>
+            <p className="text-sm text-muted-foreground">A habit tracker for your life</p>
+        </div>
+        <div className="flex flex-col gap-4 max-w-5xl mx-auto py-16 bg-white/20 rounded-2xl p-6 mt-8">
             <header className="space-y-2">
-                <h1 className="text-2xl font-bold">Habits</h1>
-                <p className="text-sm text-muted-foreground">Day: {day}</p>
+                <p className="text-sm text-muted-foreground">Today: <span className="text-ocean font-medium">{day}</span></p>
             </header>
 
             <CreateHabitForm />
@@ -66,14 +69,14 @@ export default async function HabitsPage() {
                     const checkedInToday = h.checkIns.some((c) => c.day === today);
 
                     return (    
-                    <li key={h.id} className="flex items-center justify-between rounded-md border p-3">
+                    <li key={h.id} className="flex items-center justify-between rounded-lg border border-border bg-card p-4 shadow-sm hover:shadow-md transition-shadow">
                         <div className="space-y-1">
-                            <div className="font-medium"><Link href={`/habits/${h.id}`} className="font-medium underline underline-offset-4">{h.name}</Link></div>
+                            <div className="font-medium"><Link href={`/habits/${h.id}`} className="font-semibold text-ocean hover:text-ocean/80 underline underline-offset-4 transition-colors">{h.name}</Link></div>
                             <div className="text-sm text-muted-foreground">
                             Current: {stats.current} • Longest: {stats.longest}
                             </div>
                             <div className="text-xs inline-block mt-2">
-                                {checkedInToday ? <span className="bg-green-600 text-white border border-green-700 px-2 py-1 rounded-full">✓ today</span> : <span className="bg-gray-300 text-gray-600 border border-gray-700 px-2 py-1 rounded-full">Not checked today </span>}
+                                {checkedInToday ? <span className="bg-emerald text-white border border-emerald/80 px-2 py-1 rounded-full">✓ today</span> : <span className="bg-secondary text-muted-foreground border border-border px-2 py-1 rounded-full">Not checked today</span>}
                             </div>
                         </div>
 
@@ -83,7 +86,7 @@ export default async function HabitsPage() {
                                 await toggleCheckIn(h.id, yesterday);
                             }}
                             >
-                            <button className="rounded-md px-3 py-2 text sm bg-gray-100">Toggle yesterday</button>
+                            <button className="rounded-md px-3 py-2 text-sm bg-secondary hover:bg-gold/20 transition-colors border border-border">Toggle yesterday</button>
                        </form>
 
                         <form
@@ -93,8 +96,8 @@ export default async function HabitsPage() {
                             }}
                         >
                             <button
-                            className={`rounded-md px-3 py-2 text-sm ${
-                                checkedInToday ? "bg-green-600 text-white" : "bg-gray-100 text-gray-900"
+                            className={`rounded-md px-3 py-2 text-sm font-medium transition-colors ${
+                                checkedInToday ? "bg-emerald text-white hover:bg-emerald/90" : "bg-ocean text-white hover:bg-ocean/90"
                             }`}
                             >
                             {checkedInToday ? "Checked in" : "Check in"}
@@ -112,10 +115,10 @@ export default async function HabitsPage() {
                                 <input 
                                     type="date"
                                     name="day"
-                                    className="rounded-md border px-3 py-2 text-sm"
+                                    className="rounded-md border border-border bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ocean/50"
                                     required
                                 />
-                                <button className="rounded-md px-3 py-2 text-sm bg-gray-100">
+                                <button className="rounded-md px-3 py-2 text-sm bg-secondary hover:bg-gold/20 transition-colors border border-border">
                                     Toggle day
                                 </button>
 
