@@ -69,16 +69,16 @@ export default async function HabitDetailPage({
 
     return (
       <div className="mx-auto max-w-xl p-6 space-y-6">
-        <header className="space-y-2">
-          <Link href="/habits" className="text-sm text-white inline-flex items-center gap-2 underline-offset-4 hover:text-white/70 transition-colors">
+        <header className="space-y-3">
+          <Link href="/habits" className="text-sm text-muted-foreground inline-flex items-center gap-2 underline-offset-4 hover:text-foreground transition-colors">
             <ArrowLeftIcon className="size-4" /> Back to habits
           </Link>
   
-          <h1 className="text-2xl font-semibold text-white">{habit.name}</h1>
+          <h1 className="text-2xl font-bold text-foreground tracking-tight">{habit.name}</h1>
   
-          <div className="text-sm text-muted-foreground">
-            <div>Current: {stats.current} • Longest: {stats.longest}</div>
-            <div className="mt-1">Valid on: {formatValidDays(schedule)}</div>
+          <div className="text-sm text-muted-foreground space-y-1">
+            <div>Current: <span className="text-emerald font-medium">{stats.current}</span> • Longest: <span className="text-ocean font-medium">{stats.longest}</span></div>
+            <div>Valid on: <span className="text-gold">{formatValidDays(schedule)}</span></div>
           </div>
   
           <form
@@ -88,8 +88,8 @@ export default async function HabitDetailPage({
             }}
           >
             <button
-              className={`rounded-md px-4 py-2 text-sm font-medium transition-colors ${
-                checkedInToday ? "bg-emerald text-white hover:bg-emerald/90" : "bg-ocean text-white hover:bg-ocean/90"
+              className={`rounded-lg px-4 py-2 text-sm font-medium transition-colors ${
+                checkedInToday ? "bg-emerald text-teal hover:bg-emerald/90" : "bg-ocean text-teal hover:bg-ocean/90"
               }`}
             >
               {checkedInToday ? "Checked in today" : "Check in today"}
@@ -103,20 +103,20 @@ export default async function HabitDetailPage({
           const scheduleType = String(formData.get("scheduleType"));
           const rawDays = formData.getAll("daysOfWeek").map((v) => Number(v));
           await updateHabit(habit.id, name, scheduleType, rawDays);
-        }} className="space-y-4 border border-border rounded-lg p-5 bg-card shadow-sm">
-          <h3 className="font-semibold text-teal">Edit Habit</h3>
+        }} className="space-y-4 glass-card p-5">
+          <h3 className="font-semibold text-gold">Edit Habit</h3>
 
           <input 
             type="text"
             name="name"
             defaultValue={habit.name}
-            className="rounded-md border border-border bg-background px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-ocean/50"
+            className="glass-input rounded-lg px-3 py-2 w-full text-foreground placeholder:text-muted-foreground focus:outline-none"
             />
 
           <select
             name="scheduleType"
             defaultValue={habit.scheduleType}
-            className="rounded-md border border-border bg-background px-3 py-2 focus:outline-none focus:ring-2 focus:ring-ocean/50"
+            className="glass-input rounded-lg px-3 py-2 text-foreground focus:outline-none"
             >
               <option value="DAILY">Daily</option>
               <option value="WEEKDAYS">Weekdays</option>
@@ -125,45 +125,45 @@ export default async function HabitDetailPage({
 
           <div className="flex flex-wrap gap-3">
             {["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].map((label, i) => (
-              <label key={i} className="flex items-center gap-2 cursor-pointer select-none">
+              <label key={i} className="glass-btn px-3 py-1.5 rounded-lg flex items-center gap-2 cursor-pointer select-none">
                 <input 
                   type="checkbox" 
                   name="daysOfWeek" 
                   value={i} 
                   defaultChecked={parseDaysOfWeek(habit.daysOfWeek)?.includes(i)} 
-                  className="w-4 h-4 accent-ocean"
+                  className="w-4 h-4 accent-emerald"
                 />
-                <span className="text-sm text-muted-foreground">{label}</span>
+                <span className="text-sm text-foreground">{label}</span>
               </label>
             ))}
           </div>
 
           <div className="flex justify-start gap-2">
-            <Button type="submit" className="bg-ocean hover:bg-ocean/90 text-white rounded-md px-4 py-2">Save changes</Button>
+            <Button type="submit" className="bg-ocean hover:bg-ocean/90 text-teal rounded-lg px-4 py-2 font-medium">Save changes</Button>
             <DeleteHabitButton habitId={habit.id} />
           </div>
         </form>
 
-        <div className="text-sm text-muted-foreground">
-            Current: {stats.current} • Longest: {stats.longest} • Total (last year): {totalLastYear}
+        <div className="text-sm text-muted-foreground glass-card p-4">
+            Current: <span className="text-emerald font-medium">{stats.current}</span> • Longest: <span className="text-ocean font-medium">{stats.longest}</span> • Total (last year): <span className="text-gold font-medium">{totalLastYear}</span>
         </div>
 
-        <section className="space-y-2">
-          <h2 className="text-lg font-semibold text-teal">History</h2>
+        <section className="space-y-3">
+          <h2 className="text-lg font-semibold text-foreground">History</h2>
   
           <ul className="space-y-2">
             {habit.checkIns.slice(0, 30).map((c) => {
               const isValidDay = isScheduledDay(c.day, schedule);
               return (
-                <li key={c.day} className={`rounded-lg border p-3 text-sm flex flex-col gap-1 transition-colors ${
-                  c.day === today ? "bg-white/20 border-emerald/30" : "bg-card border-border text-muted-foreground"
+                <li key={c.day} className={`glass-item p-3 text-sm flex flex-col gap-1 ${
+                  c.day === today ? "!border-emerald/40 !bg-emerald/10" : ""
                 }`}>
                   <div className="flex justify-between items-center">
-                    <span className={c.day === today ? "text-teal font-medium" : ""}>{c.day}</span>
+                    <span className={c.day === today ? "text-emerald font-medium" : "text-foreground"}>{c.day}</span>
                     <div className="flex items-center gap-2">
-                      {c.day === today && <span className="text-white bg-emerald/60 px-2 py-1 rounded border border-emerald/30 font-medium">Today</span>}
+                      {c.day === today && <span className="text-teal bg-emerald px-2 py-1 rounded-lg border border-emerald/60 font-medium text-xs">Today</span>}
                       {!isValidDay && (
-                        <span className="text-xs text-gold bg-gold/10 px-2 py-1 rounded border border-gold/30">
+                        <span className="text-xs text-gold bg-gold/20 px-2 py-1 rounded-lg border border-gold/40">
                           Excluded
                         </span>
                       )}
@@ -179,7 +179,7 @@ export default async function HabitDetailPage({
             })}
   
             {habit.checkIns.length === 0 ? (
-              <li className="text-sm text-muted-foreground">
+              <li className="glass-item text-sm text-muted-foreground py-4 text-center">
                 No check-ins yet.
               </li>
             ) : null}
