@@ -19,20 +19,20 @@ export function DeleteHabitButton({ habitId }: { habitId: string }) {
 
     return (
         <>
-        <Button className="flex flex-none w-fit px-3 py-2" variant="destructive" size="icon" onClick={() => setOpen(true)}>
+        <Button className="flex flex-none w-fit px-3 py-2 rounded-lg font-medium" variant="destructive" onClick={() => setOpen(true)}>
             <TrashIcon className="size-4" /> Delete Habit
         </Button>
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent>
+            <DialogContent className="glass-card border-pink/30">
                 <DialogHeader>
-                    <DialogTitle>Delete Habit</DialogTitle>
-                    <DialogDescription>
+                    <DialogTitle className="text-pink font-semibold">Delete Habit</DialogTitle>
+                    <DialogDescription className="text-foreground">
                         Are you sure you want to delete this habit? This action cannot be undone.
                     </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
-                    <Button variant="outline" onClick={() => setOpen(false)}>Cancel</Button>
-                    <Button variant="destructive" onClick={handleDelete}>Delete</Button>
+                    <Button variant="outline" onClick={() => setOpen(false)} className="rounded-lg font-medium">Cancel</Button>
+                    <Button variant="destructive" onClick={handleDelete} className="rounded-lg font-medium">Delete</Button>
                 </DialogFooter>
             </DialogContent>
         </Dialog>
