@@ -28,7 +28,7 @@ export default async function HabitsPage() {
     });
 
     // Calculate stats for each habit
-    const habitsWithStats = habits.map((h) => {
+    const habitsWithStats = habits.map((h: typeof habits[number]) => {
         const parsedDays = parseDaysOfWeek(h.daysOfWeek);
         const schedule = {
             scheduleType: h.scheduleType,
