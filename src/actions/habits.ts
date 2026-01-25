@@ -48,15 +48,15 @@ export async function createHabit(
   prevState: { error?: string } | null,
   formData: FormData
 ): Promise<{ error?: string }> {
-  const { id: userId } = await getAuthUser();
+  const { id: userId, email } = await getAuthUser();
 
-  // Ensure dev user exists in the database
-  // Uses upsert to create if missing, or update (no-op) if exists
-  /*  await prisma.user.upsert({
+  // Ensure user exists in the database (syncs Clerk user to local DB)
+  // Uses upsert to create if missing, or update if exists
+  await prisma.user.upsert({
     where: { id: userId },
-    update: {},
-    create: { id: userId, email: user.email },
-  }); */
+    update: { email },
+    create: { id: userId, email },
+  });
 
   // Define validation schema for habit name
   // Name must be between 1 and 50 characters
