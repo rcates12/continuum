@@ -1,5 +1,5 @@
 import { prisma } from "@/src/lib/prisma";
-import { getDevUser } from "@/src/lib/auth";
+import { getAuthUser } from "@/src/lib/auth";
 import { parseDaysOfWeek, formatValidDays } from "@/src/lib/schedule";
 import { computeScheduleStreakStats, dayKey } from "@/src/lib/streaks";
 import { NewHabitModal } from "./NewHabitModal";
@@ -14,10 +14,10 @@ export default async function HabitsPage() {
     y.setDate(y.getDate() - 1);
     const yesterday = dayKey(y);
 
-    const user = await getDevUser();
+    const { id: userId } = await getAuthUser();
 
     const habits = await prisma.habit.findMany({
-        where: { userId: user.id },
+        where: { userId },
         orderBy: { createdAt: "asc" },
         include: {
           checkIns: {
@@ -56,6 +56,7 @@ export default async function HabitsPage() {
             checkedInToday,
             validDays,
             parsedDaysOfWeek: parsedDays,
+            checkIns: h.checkIns.map((c) => c.day),
         };
     });
 
@@ -111,6 +112,7 @@ export default async function HabitsPage() {
                                 yesterday={yesterday}
                                 validDays={h.validDays}
                                 parsedDaysOfWeek={h.parsedDaysOfWeek}
+                                checkIns={h.checkIns}
                             />
                         ))}
                     </div>

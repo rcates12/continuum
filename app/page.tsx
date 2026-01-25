@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ClerkProvider, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 
 export default function Home() {
   return (
@@ -13,19 +14,32 @@ export default function Home() {
           </p>
         </div>
 
+
         <div className="flex flex-col gap-4 sm:flex-row">
-          <Link
-            href="/habits"
-            className="flex h-12 items-center justify-center gap-2 rounded-xl bg-ocean px-8 text-teal font-medium transition-colors hover:bg-ocean/90"
-          >
-            Get Started
-          </Link>
-          <Link
-            href="/habits"
-            className="glass-btn flex h-12 items-center justify-center rounded-xl px-8 text-foreground"
-          >
-            View Habits
-          </Link>
+          <SignedOut>
+            <SignInButton>
+              <button className="glass-btn bg-ocean flex h-12 items-center justify-center rounded-xl px-8 text-teal font-medium transition-colors hover:bg-ocean/90 cursor-pointer">
+                Login
+              </button>
+            </SignInButton>
+            <SignUpButton>
+              <a href="/sign-up" className="glass-btn bg-gold flex h-12 items-center justify-center rounded-xl px-8 text-teal font-medium transition-colors hover:bg-gold/90 cursor-pointer">
+                Sign Up
+              </a>
+            </SignUpButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+
+            <SignedIn>
+              <Link
+                href="/habits"
+                className="glass-btn flex h-12 items-center justify-center rounded-xl px-8 text-foreground"
+              >
+                Go to Habits
+              </Link>
+            </SignedIn>
         </div>
 
         <div className="glass-card p-6 max-w-sm space-y-3">
