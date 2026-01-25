@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Silk from "./habits/Silk";
+import { ClerkProvider, SignInButton, SignUpButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+
 
 const jetbrainsMono = JetBrains_Mono({
   variable: "--font-mono",
@@ -21,6 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <ClerkProvider>
       <body
         className={`${jetbrainsMono.variable} font-mono antialiased px-4`}
       >
@@ -33,8 +36,28 @@ export default function RootLayout({
           noiseIntensity={1.5} 
           rotation={0} 
         />
+        <header>
+          <div className="flex flex-col gap-4 sm:flex-row p-4">
+          <SignedOut>
+            <SignInButton>
+              <a href="/sign-in" className="glass-btn bg-ocean flex items-center justify-center rounded-xl px-4 py-2 text-teal font-medium transition-colors hover:bg-ocean/90 cursor-pointer">
+                Login
+              </a>
+            </SignInButton>
+            <SignUpButton>
+              <a href="/sign-up" className="glass-btn bg-gold flex items-center justify-center rounded-xl px-4 py-2 text-teal font-medium transition-colors hover:bg-gold/90 cursor-pointer">
+                Sign Up
+              </a>
+            </SignUpButton>
+          </SignedOut>
+          <SignedIn>
+            <UserButton />
+          </SignedIn>
+          </div>
+        </header>
         {children}
-      </body>
+      </body> 
+      </ClerkProvider>
     </html>
   );
 }

@@ -10,7 +10,7 @@
 
 import { prisma } from "@/src/lib/prisma";
 import { z } from "zod";
-import { getDevUser } from "@/src/lib/auth";
+import { getAuthUser } from "@/src/lib/auth";
 import { revalidatePath } from "next/cache";
 import { daysOfWeekToCsv } from "@/src/lib/schedule";
 
@@ -48,15 +48,15 @@ export async function createHabit(
   prevState: { error?: string } | null,
   formData: FormData
 ): Promise<{ error?: string }> {
-  const user = await getDevUser();
+  const { id: userId } = await getAuthUser();
 
   // Ensure dev user exists in the database
   // Uses upsert to create if missing, or update (no-op) if exists
-  await prisma.user.upsert({
-    where: { id: user.id },
+  /*  await prisma.user.upsert({
+    where: { id: userId },
     update: {},
-    create: { id: user.id, email: user.email },
-  });
+    create: { id: userId, email: user.email },
+  }); */
 
   // Define validation schema for habit name
   // Name must be between 1 and 50 characters
@@ -94,7 +94,7 @@ export async function createHabit(
     // Create the habit record in the database
     await prisma.habit.create({
       data: {
-        userId: user.id,
+        userId,
         name: parsed.data.name,
         scheduleType: scheduleType,
         daysOfWeek: daysCsv,
@@ -122,12 +122,12 @@ export async function createHabit(
  * @throws Error if the habit is not found or doesn't belong to the user
  */
 export async function toggleCheckIn(habitId: string, day?: string) {
-  const user = await getDevUser();
+  const { id: userId } = await getAuthUser();
 
   // Verify that the habit exists and belongs to the authenticated user
   // This prevents users from modifying habits they don't own
   const habit = await prisma.habit.findFirst({
-    where: { id: habitId, userId: user.id },
+    where: { id: habitId, userId },
     select: { id: true },
   });
   if (!habit) throw new Error("Habit not found");
@@ -164,9 +164,9 @@ export async function toggleCheckIn(habitId: string, day?: string) {
 // @param habitId - The unique identifier of the habit to delete
 // @throws Error if the habit is not found or doesn't belong to the user
 export async function deleteHabit(habitId: string) {
-  const user = await getDevUser();
+  const { id: userId } = await getAuthUser();
   const habit = await prisma.habit.findFirst({
-    where: { id: habitId, userId: user.id },
+    where: { id: habitId, userId },
     select: { id: true },
   });
   if (!habit) throw new Error("Habit not found");
@@ -175,11 +175,11 @@ export async function deleteHabit(habitId: string) {
 }
 
 export async function updateHabit(habitId: string, name: string, scheduleType: string, daysOfWeek: number[]) {
-  const user = await getDevUser();
+  const { id: userId } = await getAuthUser();
 
   // verify that the habit exists and belongs to the user
   const habit = await prisma.habit.findFirst({
-    where: { id: habitId, userId: user.id },
+    where: { id: habitId, userId },
     select: { id: true },
   });
   if (!habit) throw new Error("Habit not found");

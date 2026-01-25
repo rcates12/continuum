@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { toggleCheckIn, updateHabit, deleteHabit } from "@/src/actions/habits";
+import { HabitHeatmap } from "./[id]/HabitHeatmap";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -29,6 +30,7 @@ interface HabitCardProps {
   yesterday: string;
   validDays: string;
   parsedDaysOfWeek: number[] | null;
+  checkIns: string[];
 }
 
 export function HabitCard({ 
@@ -37,7 +39,8 @@ export function HabitCard({
   checkedInToday, 
   yesterday,
   validDays,
-  parsedDaysOfWeek
+  parsedDaysOfWeek,
+  checkIns
 }: HabitCardProps) {
   const [open, setOpen] = useState(false);
   const [deleteOpen, setDeleteOpen] = useState(false);
@@ -126,17 +129,222 @@ export function HabitCard({
                 </div>
               </DialogHeader>
 
-              {/* Stats */}
-              <div className="grid grid-cols-2 gap-3">
-                <div className="glass-item p-4 text-center">
-                  <FlameIcon className="size-6 text-emerald mx-auto mb-1" />
-                  <div className="text-2xl font-bold text-emerald">{stats.current}</div>
-                  <div className="text-xs text-muted-foreground">Current Streak</div>
+              {/* Activity Heatmap */}
+              <div>
+                <HabitHeatmap 
+                  checkIns={checkIns} 
+                  schedule={{
+                    scheduleType: habit.scheduleType,
+                    daysOfWeek: parsedDaysOfWeek || [],
+                  }}
+                  weeks={26}
+                />
+              </div>
+
+              {/* Stats - Hologram 3D Effect */}
+              <div className="flex gap-4" style={{ perspective: '1200px' }}>
+                {/* Current Streak Hologram */}
+                <div className="flex-1 relative h-32 flex items-center justify-center" style={{
+                  perspective: '1200px',
+                }}>
+                  {/* Hologram glow effect */}
+                  <div className="absolute inset-0 rounded-xl blur-2xl bg-gradient-to-b from-emerald/40 via-emerald/20 to-transparent opacity-60 animate-pulse" />
+                  
+                  {/* Hologram scan lines */}
+                  <div className="absolute inset-0 rounded-xl overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-emerald/10 via-transparent to-emerald/10 animate-pulse" />
+                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald/60 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-emerald/60 to-transparent" />
+                  </div>
+
+                  {/* Hologram container with 3D perspective */}
+                  <div className="relative z-10 text-center">
+                    {/* Hologram label */}
+                    <div className="text-xs uppercase tracking-widest text-emerald/70 font-semibold mb-2 drop-shadow-lg" style={{
+                      textShadow: '0 0 10px rgba(6, 214, 160, 0.6), 0 0 20px rgba(6, 214, 160, 0.3)',
+                      filter: 'brightness(1.2)',
+                    }}>
+                      Current
+                    </div>
+
+                    {/* Main hologram number with multiple shadow layers - ROTATING */}
+                    <div className="relative" style={{
+                      animation: 'hologram-rotate-y 6s linear infinite',
+                      transformStyle: 'preserve-3d',
+                      width: 'fit-content',
+                      margin: '0 auto',
+                    }}>
+                      {/* Deep shadow layers for 3D effect */}
+                      <div className="absolute inset-0 text-5xl font-black tracking-tighter text-emerald/25" style={{
+                        transform: 'translate(12px, 12px)',
+                        filter: 'blur(2px)',
+                      }}>
+                        {stats.current}
+                      </div>
+
+                      <div className="absolute inset-0 text-5xl font-black tracking-tighter text-emerald/20" style={{
+                        transform: 'translate(8px, 8px)',
+                        filter: 'blur(1px)',
+                      }}>
+                        {stats.current}
+                      </div>
+
+                      <div className="absolute inset-0 text-5xl font-black tracking-tighter text-emerald/15" style={{
+                        transform: 'translate(4px, 4px)',
+                      }}>
+                        {stats.current}
+                      </div>
+                      
+                      {/* Light edge highlight for dimension */}
+                      <div className="absolute inset-0 text-5xl font-black tracking-tighter text-white/30" style={{
+                        transform: 'translate(-2px, -2px)',
+                        filter: 'blur(0.5px)',
+                      }}>
+                        {stats.current}
+                      </div>
+
+                      {/* Main hologram number - 3D plastic */}
+                      <div className="relative text-5xl font-black tracking-tighter" style={{
+                        background: 'linear-gradient(135deg, rgba(6, 214, 160, 0.85) 0%, rgba(6, 214, 160, 0.6) 50%, rgba(0, 255, 200, 0.7) 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)',
+                        filter: 'drop-shadow(0 2px 4px rgba(6, 214, 160, 0.2))',
+                        position: 'relative',
+                        zIndex: 10,
+                      }}>
+                        {stats.current}
+                      </div>
+
+                      {/* Hologram flicker effect (subtle) */}
+                      <div className="absolute inset-0 text-5xl font-black tracking-tighter text-emerald/20 mix-blend-screen pointer-events-none" style={{
+                        animation: 'hologram-flicker 3s ease-in-out infinite',
+                      }}>
+                        {stats.current}
+                      </div>
+                    </div>
+
+                    {/* Icon with glow */}
+                    <div className="mt-2 flex justify-center">
+                      <FlameIcon className="size-5 text-emerald" style={{
+                        filter: 'drop-shadow(0 0 8px rgba(6, 214, 160, 0.6))',
+                      }} />
+                    </div>
+                  </div>
+
+                  {/* Hologram frame border */}
+                  <div className="absolute inset-0 rounded-xl border-2 border-emerald/30 pointer-events-none" style={{
+                    boxShadow: 'inset 0 0 20px rgba(6, 214, 160, 0.1), 0 0 30px rgba(6, 214, 160, 0.2)',
+                  }} />
+
+                  {/* Corner accents */}
+                  <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-emerald/60" />
+                  <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-emerald/60" />
+                  <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-emerald/60" />
+                  <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-emerald/60" />
                 </div>
-                <div className="glass-item p-4 text-center">
-                  <TrophyIcon className="size-6 text-ocean mx-auto mb-1" />
-                  <div className="text-2xl font-bold text-ocean">{stats.longest}</div>
-                  <div className="text-xs text-muted-foreground">Best Streak</div>
+
+                {/* Best Streak Hologram */}
+                <div className="flex-1 relative h-32 flex items-center justify-center" style={{
+                  perspective: '1200px',
+                }}>
+                  {/* Hologram glow effect */}
+                  <div className="absolute inset-0 rounded-xl blur-2xl bg-gradient-to-b from-ocean/40 via-ocean/20 to-transparent opacity-60 animate-pulse" />
+                  
+                  {/* Hologram scan lines */}
+                  <div className="absolute inset-0 rounded-xl overflow-hidden">
+                    <div className="absolute inset-0 bg-gradient-to-b from-ocean/10 via-transparent to-ocean/10 animate-pulse" />
+                    <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-ocean/60 to-transparent" />
+                    <div className="absolute bottom-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-ocean/60 to-transparent" />
+                  </div>
+
+                  {/* Hologram container with 3D perspective */}
+                  <div className="relative z-10 text-center">
+                    {/* Hologram label */}
+                    <div className="text-xs uppercase tracking-widest text-ocean/70 font-semibold mb-2 drop-shadow-lg" style={{
+                      textShadow: '0 0 10px rgba(61, 184, 229, 0.6), 0 0 20px rgba(61, 184, 229, 0.3)',
+                      filter: 'brightness(1.2)',
+                    }}>
+                      Best
+                    </div>
+
+                    {/* Main hologram number with multiple shadow layers - ROTATING */}
+                    <div className="relative" style={{
+                      animation: 'hologram-rotate-y-opposite 6s linear infinite',
+                      transformStyle: 'preserve-3d',
+                      width: 'fit-content',
+                      margin: '0 auto',
+                    }}>
+                      {/* Deep shadow layers for 3D effect */}
+                      <div className="absolute inset-0 text-5xl font-black tracking-tighter text-ocean/25" style={{
+                        transform: 'translate(12px, 12px)',
+                        filter: 'blur(2px)',
+                      }}>
+                        {stats.longest}
+                      </div>
+
+                      <div className="absolute inset-0 text-5xl font-black tracking-tighter text-ocean/20" style={{
+                        transform: 'translate(8px, 8px)',
+                        filter: 'blur(1px)',
+                      }}>
+                        {stats.longest}
+                      </div>
+
+                      <div className="absolute inset-0 text-5xl font-black tracking-tighter text-ocean/15" style={{
+                        transform: 'translate(4px, 4px)',
+                      }}>
+                        {stats.longest}
+                      </div>
+                      
+                      {/* Light edge highlight for dimension */}
+                      <div className="absolute inset-0 text-5xl font-black tracking-tighter text-white/30" style={{
+                        transform: 'translate(-2px, -2px)',
+                        filter: 'blur(0.5px)',
+                      }}>
+                        {stats.longest}
+                      </div>
+
+                      {/* Main hologram number - 3D plastic */}
+                      <div className="relative text-5xl font-black tracking-tighter" style={{
+                        background: 'linear-gradient(135deg, rgba(61, 184, 229, 0.85) 0%, rgba(61, 184, 229, 0.6) 50%, rgba(0, 200, 255, 0.7) 100%)',
+                        WebkitBackgroundClip: 'text',
+                        WebkitTextFillColor: 'transparent',
+                        backgroundClip: 'text',
+                        textShadow: '0 1px 2px rgba(0, 0, 0, 0.4)',
+                        filter: 'drop-shadow(0 2px 4px rgba(61, 184, 229, 0.2))',
+                        position: 'relative',
+                        zIndex: 10,
+                      }}>
+                        {stats.longest}
+                      </div>
+
+                      {/* Hologram flicker effect (subtle) */}
+                      <div className="absolute inset-0 text-5xl font-black tracking-tighter text-ocean/20 mix-blend-screen pointer-events-none" style={{
+                        animation: 'hologram-flicker 3s ease-in-out infinite',
+                      }}>
+                        {stats.longest}
+                      </div>
+                    </div>
+
+                    {/* Icon with glow */}
+                    <div className="mt-2 flex justify-center">
+                      <TrophyIcon className="size-5 text-ocean" style={{
+                        filter: 'drop-shadow(0 0 8px rgba(61, 184, 229, 0.6))',
+                      }} />
+                    </div>
+                  </div>
+
+                  {/* Hologram frame border */}
+                  <div className="absolute inset-0 rounded-xl border-2 border-ocean/30 pointer-events-none" style={{
+                    boxShadow: 'inset 0 0 20px rgba(61, 184, 229, 0.1), 0 0 30px rgba(61, 184, 229, 0.2)',
+                  }} />
+
+                  {/* Corner accents */}
+                  <div className="absolute top-2 left-2 w-3 h-3 border-t-2 border-l-2 border-ocean/60" />
+                  <div className="absolute top-2 right-2 w-3 h-3 border-t-2 border-r-2 border-ocean/60" />
+                  <div className="absolute bottom-2 left-2 w-3 h-3 border-b-2 border-l-2 border-ocean/60" />
+                  <div className="absolute bottom-2 right-2 w-3 h-3 border-b-2 border-r-2 border-ocean/60" />
                 </div>
               </div>
 

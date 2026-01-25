@@ -105,3 +105,30 @@ export function computeStreakStats(days: string[], today = dayKey()): StreakStat
   
     return { current, longest };
 }
+
+export function generateDateGrid(weeks: number): string[][] {
+  const today = new Date();
+  const grid: string[][] = [[], [], [], [], [], [], []];
+
+  // find th emost recent sunday ( end of current week column)
+  const endOfWeek = new Date(today);
+  const dayOfWeek = today.getDay();
+  endOfWeek.setDate(today.getDate() + (7 - dayOfWeek) % 7);
+
+  // walk backwards from endOfWeek for (weeks * 7) days
+  const totalDays = weeks * 7;
+  const startDate = new Date(endOfWeek);
+  startDate.setDate(endOfWeek.getDate() - totalDays +1);
+
+  // fill the grid with dayKeys
+  for (let i = 0; i < totalDays; i++) {
+    const day = new Date(startDate);
+    day.setDate(startDate.getDate() + i);
+
+    const jsDay = day.getDay();
+    const gridRow = jsDay === 0 ? 6 : jsDay - 1;
+
+    grid[gridRow].push(dayKey(day));
+  }
+  return grid;
+}

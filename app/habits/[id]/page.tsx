@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/src/lib/prisma";
-import { getDevUser } from "@/src/lib/auth";
+import { getAuthUser } from "@/src/lib/auth";
 import { toggleCheckIn, updateHabit } from "@/src/actions/habits";
 import { Button } from "@/components/ui/button";
 import { dayKey } from "@/src/lib/streaks";
@@ -8,6 +8,7 @@ import { parseDaysOfWeek, isScheduledDay, formatValidDays } from "@/src/lib/sche
 import { computeScheduleStreakStats } from "@/src/lib/streaks";
 import { DeleteHabitButton } from "./DeletHabitButton";
 import { ArrowLeftIcon } from "lucide-react";
+import { HabitHeatmap } from "./HabitHeatmap";
 
 export default async function HabitDetailPage({
     params,
@@ -15,7 +16,7 @@ export default async function HabitDetailPage({
     params: Promise<{ id: string }>;
   }) {
     const { id } = await params;
-    const user = await getDevUser();
+    const { id: userId } = await getAuthUser();
     const today = dayKey();
   
     // Fetch habit + recent check-ins (last 365 days is fine for now)
@@ -26,7 +27,7 @@ export default async function HabitDetailPage({
     y.setDate(y.getDate() - 1);
   
     const habit = await prisma.habit.findFirst({
-      where: { id, userId: user.id }, // ownership check
+      where: { id, userId }, // ownership check
       include: {
         checkIns: {
           where: { day: { gte: minDay } },
@@ -95,6 +96,8 @@ export default async function HabitDetailPage({
               {checkedInToday ? "Checked in today" : "Check in today"}
             </button>
           </form>
+
+          <HabitHeatmap checkIns={days} schedule={schedule} />
         </header>
 
         <form action={async (formData: FormData) => {
