@@ -69,7 +69,7 @@ export default async function HabitDetailPage({
     );
 
     return (
-      <div className="mx-auto max-w-xl p-6 space-y-6">
+      <div className="mx-auto max-w-xl p-4 sm:p-6 space-y-6 pb-safe">
         <header className="space-y-3">
           <Link href="/habits" className="text-sm text-muted-foreground inline-flex items-center gap-2 underline-offset-4 hover:text-foreground transition-colors">
             <ArrowLeftIcon className="size-4" /> Back to habits
