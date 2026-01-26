@@ -7,8 +7,8 @@ export default function Home() {
     <>
       {/* Signed Out View - Original Layout */}
       <SignedOut>
-        <div className="flex min-h-screen items-center justify-center">
-          <main className="flex flex-col items-center gap-12 py-32 px-8 text-center">
+        <div className="flex h-[100dvh] items-center justify-center overflow-hidden">
+          <main className="flex flex-col items-center gap-6 py-6 px-4 text-center">
             <div className="space-y-4">
               <h1 className="text-5xl font-bold text-foreground tracking-tight">
                 Continuum
@@ -18,7 +18,7 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="flex flex-col gap-4 sm:flex-row">
+            <div className="flex flex-row gap-4">
               <SignInButton>
                 <a href="/sign-in" className="glass-btn bg-ocean flex h-12 items-center justify-center rounded-xl px-8 text-teal font-medium transition-colors hover:bg-ocean/90 cursor-pointer">
                   Login

@@ -220,9 +220,23 @@
   html, body {
     @apply text-foreground;
     font-family: var(--font-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    min-height: 100dvh;
+  }
+  
+  /* Lock scroll only on home page */
+  .scroll-lock {
     height: 100dvh;
     max-height: 100dvh;
     overflow: hidden;
+  }
+  
+  /* Safe area padding for devices with notches (iPhone X+, etc.) */
+  .pb-safe {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+  
+  .pt-safe {
+    padding-top: max(0.5rem, env(safe-area-inset-top));
   }
   
   /* Liquid glass effect for cards */

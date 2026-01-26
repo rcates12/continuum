@@ -65,11 +65,11 @@ export default async function HabitsPage() {
     const totalHabits = habitsWithStats.length;
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-[100dvh] pb-safe">
             {/* Header */}
-            <header className="max-w-3xl mx-auto pt-12 pb-8 text-center">
-                <h1 className="text-4xl font-bold text-foreground tracking-tight">Continuum</h1>
-                <p className="text-muted-foreground mt-2">Build lasting habits</p>
+            <header className="max-w-3xl mx-auto pt-8 sm:pt-12 pb-6 sm:pb-8 text-center px-4">
+                <h1 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">Continuum</h1>
+                <p className="text-muted-foreground mt-2 text-sm sm:text-base">Build lasting habits</p>
             </header>
 
             {/* New habit trigger */}

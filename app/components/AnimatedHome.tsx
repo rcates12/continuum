@@ -37,7 +37,7 @@ export default function AnimatedHome() {
   const isScaled = phase === 'scale' || phase === 'complete';
 
   return (
-    <div className="flex flex-col h-full max-h-full">
+    <div className="flex flex-col h-[100dvh] max-h-[100dvh] overflow-hidden">
       {/* Top Header Bar - Avatar and Logo */}
       <div className="shrink-0 flex items-center justify-between px-4 pt-2 pb-1">
         <UserButton 
